@@ -2,9 +2,9 @@ using Terminal.Gui;
 
 namespace K8sUtils.Controls;
 
-public class ContainerList : ListView
+public class PodList : ListView
 {
-    public ContainerList()
+    public PodList()
     {
         X = 0;
         Y = 0;

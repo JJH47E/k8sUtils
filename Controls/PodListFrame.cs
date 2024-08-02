@@ -1,44 +1,54 @@
 using System.Collections.ObjectModel;
+using K8sUtils.Events;
 using K8sUtils.Exceptions;
 using K8sUtils.ProcessHosts;
 using Terminal.Gui;
 
 namespace K8sUtils.Controls;
 
-public class ContainerFrame : FrameView
+public class PodListFrame : FrameView
 {
     private CancellationTokenSource? _cancellationTokenSource;
-    private readonly ContainerList _containerList;
+    private readonly PodList _podList;
     private readonly IKubectlHost _kubectlHost;
 
-    private static string _namespace;
+    private static string _namespace = null!;
     
-    public ContainerFrame(IKubectlHost kubectlHost)
+    public EventHandler<PodSelectedEvent>? PodSelected;
+    
+    public PodListFrame(IKubectlHost kubectlHost)
     {
         _kubectlHost = kubectlHost;
         
-        Title = "Containers";
-        Width = Dim.Fill();
+        Title = "Pods";
+        Width = Dim.Percent(50);
         Height = Dim.Fill();
         X = 0;
         Y = 0;
         
-        _containerList = new ContainerList();
-        _containerList.SetSource(new ObservableCollection<string>([]));
+        _podList = new PodList();
+        _podList.SetSource(new ObservableCollection<string>([]));
+
+        _podList.SelectedItemChanged += OnSelectedItemChanged;
         
-        Add(_containerList);
+        Add(_podList);
     }
 
-    public void OnNamespaceEntered(object? sender, string data)
+    public void OnNamespaceEntered(object? sender, NamespaceSelectedEvent e)
     {
-        _namespace = data;
+        _namespace = e.Namespace;
         Application.Invoke(CallGetContainersAsync);
+    }
+
+    private void OnSelectedItemChanged(object? sender, ListViewItemEventArgs e)
+    {
+        PodSelected?.Invoke(this, new PodSelectedEvent(e.Value.ToString()!, _namespace));
     }
 
     private async void CallGetContainersAsync()
     {
         _cancellationTokenSource = new CancellationTokenSource ();
-        _containerList.Source = null;
+        _podList.Source = null;
 
         try
         {
@@ -62,7 +72,7 @@ public class ContainerFrame : FrameView
             
             if (!_cancellationTokenSource.IsCancellationRequested)
             {
-                await _containerList.SetSourceAsync(items);
+                await _podList.SetSourceAsync(items);
             }
         }
         catch (OperationCanceledException _) {}

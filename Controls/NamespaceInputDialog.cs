@@ -1,10 +1,11 @@
+using K8sUtils.Events;
 using Terminal.Gui;
 
 namespace K8sUtils.Controls;
 
 public class NamespaceInputDialog : Dialog
 {
-    public event EventHandler<string>? NamespaceEntered;
+    public event EventHandler<NamespaceSelectedEvent>? NamespaceEntered;
     
     public NamespaceInputDialog()
     {
@@ -28,7 +29,7 @@ public class NamespaceInputDialog : Dialog
 
         btnSubmit.Accept += (s, e) =>
         {
-            NamespaceEntered?.Invoke(this, namespaceText.Text);
+            NamespaceEntered?.Invoke(this, new NamespaceSelectedEvent(namespaceText.Text));
         };
 
         Add(namespaceLabel, namespaceText, btnSubmit);
