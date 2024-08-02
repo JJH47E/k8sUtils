@@ -24,12 +24,19 @@ public class MainWindow : Window
         _namespaceDialog.NamespaceEntered += OnNamespaceEntered;
         
         containerFrame.PodSelected += actionFrame.OnPodSelected;
+        containerFrame.FatalError += OnFatalError;
 
         Add(containerFrame, actionFrame, _namespaceDialog);
     }
     
-    public void OnNamespaceEntered(object? sender, NamespaceSelectedEvent e)
+    private void OnNamespaceEntered(object? sender, NamespaceSelectedEvent e)
     {
         Remove(_namespaceDialog);
-    } 
+    }
+
+    private void OnFatalError(object? sender, FatalErrorEvent e)
+    {
+        var fatalExceptionDialog = new FatalExceptionDialog(e.Message);
+        Add(fatalExceptionDialog);
+    }
 }

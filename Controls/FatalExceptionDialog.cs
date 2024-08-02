@@ -4,13 +4,13 @@ namespace K8sUtils.Controls;
 
 public class FatalExceptionDialog : Dialog
 {
-    public FatalExceptionDialog(Exception exception)
+    public FatalExceptionDialog(string message)
     {
         Title = "Fatal Exception";
         
         var dialogLabel = new Label
         {
-            Text = exception.Message,
+            Text = message,
             X = Pos.Center(),
             Y = Pos.Center()
         };

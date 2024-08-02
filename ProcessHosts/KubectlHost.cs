@@ -63,7 +63,7 @@ public class KubectlHost : IKubectlHost
 
             if (process.ExitCode != 0)
             {
-                throw new KubectlRuntimeException($"Failed to get pods. Is the namespace: {@namespace} correct?");
+                throw new KubectlRuntimeException("Kubectl exited with a non 0 error code. This may be a bug.");
             }
 
             return ParsePodNamesFromJson(output).ToArray();

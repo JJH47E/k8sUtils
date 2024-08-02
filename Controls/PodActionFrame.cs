@@ -10,15 +10,20 @@ public class PodActionFrame : FrameView
     public PodActionFrame()
     {
         Title = "Pod";
-        Width = Dim.Percent(50);
+        Width = Dim.Fill();
         Height = Dim.Fill();
 
-        _label = new Label() { Text = "pick a pod to begin" };
+        _label = new Label()
+        {
+            Text = "No Pod Selected",
+            X = Pos.Center(),
+            Y = Pos.Center()
+        };
         
         Add(_label);
     }
 
-    public void OnPodSelected(object sender, PodSelectedEvent @event)
+    public void OnPodSelected(object? sender, PodSelectedEvent @event)
     {
         _label.Text = @event.PodName;
     }

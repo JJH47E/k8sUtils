@@ -15,13 +15,14 @@ public class PodListFrame : FrameView
     private static string _namespace = null!;
     
     public EventHandler<PodSelectedEvent>? PodSelected;
+    public EventHandler<FatalErrorEvent>? FatalError;
     
     public PodListFrame(IKubectlHost kubectlHost)
     {
         _kubectlHost = kubectlHost;
         
         Title = "Pods";
-        Width = Dim.Percent(50);
+        Width = Dim.Percent(25);
         Height = Dim.Fill();
         X = 0;
         Y = 0;
@@ -65,8 +66,14 @@ public class PodListFrame : FrameView
             }
             catch (KubectlRuntimeException ex)
             {
-                var fatalExceptionDialog = new FatalExceptionDialog(ex);
-                Add(fatalExceptionDialog);
+                FatalError?.Invoke(this, new FatalErrorEvent(ex.Message));
+                return;
+            }
+
+            if (items.Count == 0)
+            {
+                FatalError?.Invoke(this, 
+                    new FatalErrorEvent($"Unable to find any pods in the namespace: {_namespace}. Is it correct?"));
                 return;
             }
             
