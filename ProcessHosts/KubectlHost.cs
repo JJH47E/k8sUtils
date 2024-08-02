@@ -69,6 +69,44 @@ public class KubectlHost : IKubectlHost
             return ParsePodNamesFromJson(output).ToArray();
         }
     }
+    
+    public string[] GetLogs(string podName, string @namespace)
+    {
+        if (string.IsNullOrWhiteSpace(podName))
+        {
+            throw new ArgumentException("Pod name cannot be null or empty", nameof(podName));
+        }
+
+        if (string.IsNullOrWhiteSpace(@namespace))
+        {
+            throw new ArgumentException("Namespace cannot be null or empty", nameof(@namespace));
+        }
+
+        var processInfo = new ProcessStartInfo(KubectlCommand, $"logs {podName} -n {@namespace}")
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        using (var process = new Process())
+        {
+            process.StartInfo = processInfo;
+            process.Start();
+
+            string output = process.StandardOutput.ReadToEnd();
+            string error = process.StandardError.ReadToEnd();
+            process.WaitForExit();
+
+            if (process.ExitCode != 0)
+            {
+                throw new Exception($"kubectl command failed: {error}");
+            }
+
+            return output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+    }
 
     private List<string> ParsePodNamesFromJson(string json)
     {

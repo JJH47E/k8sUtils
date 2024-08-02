@@ -5,7 +5,7 @@ namespace K8sUtils.Controls;
 
 public class PodActionFrame : FrameView
 {
-    private readonly Label _label;
+    private TabView _tabView;
     
     public PodActionFrame()
     {
@@ -13,18 +13,24 @@ public class PodActionFrame : FrameView
         Width = Dim.Fill();
         Height = Dim.Fill();
 
-        _label = new Label()
-        {
-            Text = "No Pod Selected",
-            X = Pos.Center(),
-            Y = Pos.Center()
-        };
+        UpdateTabView();
         
-        Add(_label);
+        Add(_tabView);
+    }
+
+    private void UpdateTabView()
+    {
+        _tabView = new TabView();
+        
+        _tabView.AddTab(new Tab()
+        {
+            DisplayText = "Logs",
+            View = null
+        }, true);
     }
 
     public void OnPodSelected(object? sender, PodSelectedEvent @event)
     {
-        _label.Text = @event.PodName;
+        // set logs here asynchronously & pass into tab view
     }
 }
