@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using K8sUtils.Exceptions;
 using K8sUtils.ProcessHosts;
 using Terminal.Gui;
 
@@ -46,8 +47,19 @@ public class ContainerFrame : FrameView
                 _cancellationTokenSource.Token.ThrowIfCancellationRequested();
             }
 
-            ObservableCollection<string> items = await Task.Run(GetContainersAsync, _cancellationTokenSource.Token);
+            ObservableCollection<string> items;
 
+            try
+            {
+                items = await Task.Run(GetContainersAsync, _cancellationTokenSource.Token);
+            }
+            catch (KubectlRuntimeException ex)
+            {
+                var fatalExceptionDialog = new FatalExceptionDialog(ex);
+                Add(fatalExceptionDialog);
+                return;
+            }
+            
             if (!_cancellationTokenSource.IsCancellationRequested)
             {
                 await _containerList.SetSourceAsync(items);

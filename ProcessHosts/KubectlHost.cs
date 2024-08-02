@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using K8sUtils.Exceptions;
 
 namespace K8sUtils.ProcessHosts;
 
@@ -62,7 +63,7 @@ public class KubectlHost : IKubectlHost
 
             if (process.ExitCode != 0)
             {
-                throw new Exception($"kubectl command failed: {error}");
+                throw new KubectlRuntimeException($"Failed to get pods. Is the namespace: {@namespace} correct?");
             }
 
             return ParsePodNamesFromJson(output).ToArray();
