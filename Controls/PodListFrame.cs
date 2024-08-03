@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using K8sUtils.Events;
 using K8sUtils.Exceptions;
 using K8sUtils.ProcessHosts;
+using K8sUtils.Services;
 using Terminal.Gui;
 
 namespace K8sUtils.Controls;
@@ -10,16 +11,16 @@ public class PodListFrame : FrameView
 {
     private CancellationTokenSource? _cancellationTokenSource;
     private readonly PodList _podList;
-    private readonly IKubectlHost _kubectlHost;
+    private readonly IKubectlService _kubectlService;
 
     private static string _namespace = null!;
     
     public EventHandler<PodSelectedEvent>? PodSelected;
     public EventHandler<FatalErrorEvent>? FatalError;
     
-    public PodListFrame(IKubectlHost kubectlHost)
+    public PodListFrame(IKubectlService kubectlService)
     {
-        _kubectlHost = kubectlHost;
+        _kubectlService = kubectlService;
         
         Title = "Pods";
         Width = Dim.Percent(25);
@@ -62,7 +63,7 @@ public class PodListFrame : FrameView
 
             try
             {
-                items = await Task.Run(GetContainersAsync, _cancellationTokenSource.Token);
+                items = await Task.Run(GetPodsAsync, _cancellationTokenSource.Token);
             }
             catch (KubectlRuntimeException ex)
             {
@@ -85,8 +86,8 @@ public class PodListFrame : FrameView
         catch (OperationCanceledException _) {}
     }
 
-    private async Task<ObservableCollection<string>> GetContainersAsync()
+    private async Task<ObservableCollection<string>> GetPodsAsync()
     {
-        return await Task.FromResult(new ObservableCollection<string>(_kubectlHost.ListPods(_namespace)));
+        return new ObservableCollection<string>(await _kubectlService.GetPodsAsync(_namespace));
     }
 }

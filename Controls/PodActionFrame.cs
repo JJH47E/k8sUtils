@@ -1,4 +1,5 @@
 using K8sUtils.Events;
+using K8sUtils.Services;
 using Terminal.Gui;
 
 namespace K8sUtils.Controls;
@@ -6,31 +7,61 @@ namespace K8sUtils.Controls;
 public class PodActionFrame : FrameView
 {
     private TabView _tabView;
+    private readonly string? _podName;
+    private readonly string? _namespace;
+    private readonly IKubectlService _kubectlService;
     
-    public PodActionFrame()
+    public EventHandler<FatalErrorEvent>? FatalError;
+    
+    public PodActionFrame(string? podName, string? @namespace, IKubectlService kubectlService)
     {
-        Title = "Pod";
+        _podName = podName;
+        _namespace = @namespace;
+        _kubectlService = kubectlService;
+        
+        Title = _podName ?? "Pod";
         Width = Dim.Fill();
         Height = Dim.Fill();
 
-        UpdateTabView();
-        
-        Add(_tabView);
-    }
+        if (string.IsNullOrWhiteSpace(_podName) || string.IsNullOrWhiteSpace(_namespace))
+        {
+            var label = new Label()
+            {
+                Text = "Select a pod to begin.",
+                X = Pos.Center(),
+                Y = Pos.Center()
+            };
 
-    private void UpdateTabView()
-    {
-        _tabView = new TabView();
+            Add(label);
+            return;
+        }
+
+        _tabView = new TabView()
+        {
+            Height = Dim.Fill(),
+            Width = Dim.Fill(),
+        };
         
         _tabView.AddTab(new Tab()
         {
             DisplayText = "Logs",
-            View = null
+            View = CreateLogsView()
         }, true);
+        
+        Add(_tabView);
     }
 
-    public void OnPodSelected(object? sender, PodSelectedEvent @event)
+    private LogsView CreateLogsView()
     {
-        // set logs here asynchronously & pass into tab view
+        // create view & invoke async setter function
+        var view = new LogsView(_kubectlService);
+        view.FatalError += OnFatalError;
+        view.UpdateView(_podName!, _namespace!);
+        return view;
+    }
+
+    private void OnFatalError(object? sender, FatalErrorEvent e)
+    {
+        FatalError?.Invoke(sender, e);
     }
 }

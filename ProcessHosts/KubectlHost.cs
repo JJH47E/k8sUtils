@@ -37,13 +37,8 @@ public class KubectlHost : IKubectlHost
         return !string.IsNullOrEmpty(output) && File.Exists(output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)[0].Trim());
     }
 
-    public string[] ListPods(string @namespace)
+    public async Task<IEnumerable<string>> ListPods(string @namespace)
     {
-        if (string.IsNullOrWhiteSpace(@namespace))
-        {
-            throw new ArgumentException("Namespace cannot be null or empty", nameof(@namespace));
-        }
-
         var processInfo = new ProcessStartInfo(KubectlCommand, $"get pods -n {@namespace} -o json")
         {
             RedirectStandardOutput = true,
@@ -52,36 +47,23 @@ public class KubectlHost : IKubectlHost
             CreateNoWindow = true
         };
 
-        using (var process = new Process())
+        using var process = new Process();
+        process.StartInfo = processInfo;
+        process.Start();
+
+        var output = await process.StandardOutput.ReadToEndAsync();
+        await process.WaitForExitAsync();
+
+        if (process.ExitCode != 0)
         {
-            process.StartInfo = processInfo;
-            process.Start();
-
-            string output = process.StandardOutput.ReadToEnd();
-            string error = process.StandardError.ReadToEnd();
-            process.WaitForExit();
-
-            if (process.ExitCode != 0)
-            {
-                throw new KubectlRuntimeException("Kubectl exited with a non 0 error code. This may be a bug.");
-            }
-
-            return ParsePodNamesFromJson(output).ToArray();
+            throw new KubectlRuntimeException("Kubectl exited with a non 0 error code. This may be a bug.");
         }
+
+        return ParsePodNamesFromJson(output).ToArray();
     }
     
-    public string[] GetLogs(string podName, string @namespace)
+    public async Task<IEnumerable<string>> GetLogs(string podName, string @namespace)
     {
-        if (string.IsNullOrWhiteSpace(podName))
-        {
-            throw new ArgumentException("Pod name cannot be null or empty", nameof(podName));
-        }
-
-        if (string.IsNullOrWhiteSpace(@namespace))
-        {
-            throw new ArgumentException("Namespace cannot be null or empty", nameof(@namespace));
-        }
-
         var processInfo = new ProcessStartInfo(KubectlCommand, $"logs {podName} -n {@namespace}")
         {
             RedirectStandardOutput = true,
@@ -90,25 +72,23 @@ public class KubectlHost : IKubectlHost
             CreateNoWindow = true
         };
 
-        using (var process = new Process())
+        using var process = new Process();
+        process.StartInfo = processInfo;
+        process.Start();
+
+        var output = await process.StandardOutput.ReadToEndAsync();
+        var error = await process.StandardError.ReadToEndAsync();
+        await process.WaitForExitAsync();
+
+        if (process.ExitCode != 0)
         {
-            process.StartInfo = processInfo;
-            process.Start();
-
-            string output = process.StandardOutput.ReadToEnd();
-            string error = process.StandardError.ReadToEnd();
-            process.WaitForExit();
-
-            if (process.ExitCode != 0)
-            {
-                throw new Exception($"kubectl command failed: {error}");
-            }
-
-            return output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            throw new Exception($"kubectl command failed: {error}");
         }
+
+        return output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
     }
 
-    private List<string> ParsePodNamesFromJson(string json)
+    private static List<string> ParsePodNamesFromJson(string json)
     {
         var podNames = new List<string>();
         using JsonDocument doc = JsonDocument.Parse(json);

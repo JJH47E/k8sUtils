@@ -2,6 +2,6 @@ namespace K8sUtils.ProcessHosts;
 
 public interface IKubectlHost
 {
-    string[] ListPods(string @namespace);
-    string[] GetLogs(string podName, string @namespace);
+    Task<IEnumerable<string>> ListPods(string @namespace);
+    Task<IEnumerable<string>> GetLogs(string podName, string @namespace);
 }
