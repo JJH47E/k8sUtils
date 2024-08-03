@@ -13,4 +13,16 @@
       <PackageReference Include="Terminal.Gui" Version="2.0.0-prealpha.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="K8sUtils.UnitTests\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="K8sUtils.UnitTests\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="K8sUtils.UnitTests\**" />
+    </ItemGroup>
+
 </Project>

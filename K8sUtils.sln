@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K8sUtils", "K8sUtils.csproj", "{B179EA61-036F-4558-A981-EEA843DCADC2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K8sUtils.UnitTests", "K8sUtils.UnitTests\K8sUtils.UnitTests.csproj", "{7A12F6C3-985B-409F-AC82-5E7B3FC49FD2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{B179EA61-036F-4558-A981-EEA843DCADC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B179EA61-036F-4558-A981-EEA843DCADC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B179EA61-036F-4558-A981-EEA843DCADC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A12F6C3-985B-409F-AC82-5E7B3FC49FD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A12F6C3-985B-409F-AC82-5E7B3FC49FD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A12F6C3-985B-409F-AC82-5E7B3FC49FD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A12F6C3-985B-409F-AC82-5E7B3FC49FD2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
