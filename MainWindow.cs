@@ -1,6 +1,6 @@
 using K8sUtils.Controls;
 using K8sUtils.Events;
-using K8sUtils.ProcessHosts;
+using K8sUtils.Factories;
 using K8sUtils.Services;
 using Terminal.Gui;
 
@@ -9,21 +9,18 @@ namespace K8sUtils;
 public class MainWindow : Window
 {
     private readonly NamespaceInputDialog _namespaceDialog;
-    private readonly IKubectlHost _kubectlHost;
-    private readonly IKubectlService _kubectlService;
+    private readonly IPodActionFrameFactory _podActionFrameFactory;
     private PodActionFrame _podActionFrame;
     private PodListFrame _podListFrame;
     
-    public MainWindow ()
+    public MainWindow(IPodActionFrameFactory podActionFrameFactory, IKubectlService kubectlService)
     {
-        _kubectlHost = new KubectlHost();
-        _kubectlService = new KubectlService(_kubectlHost);
+        _podActionFrameFactory = podActionFrameFactory;
+        
         _namespaceDialog = new NamespaceInputDialog();
-        _podListFrame = new PodListFrame(_kubectlService);
-        _podActionFrame = new PodActionFrame(null, null, _kubectlService)
-        {
-            X = Pos.Right(_podListFrame)
-        };
+        _podListFrame = new PodListFrame(kubectlService);
+        _podActionFrame = _podActionFrameFactory.Create(null, null);
+        _podActionFrame.X = Pos.Right(_podListFrame);
 
         _namespaceDialog.NamespaceEntered += _podListFrame.OnNamespaceEntered;
         _namespaceDialog.NamespaceEntered += OnNamespaceEntered;
@@ -43,10 +40,8 @@ public class MainWindow : Window
     {
         Remove(_podActionFrame);
         _podActionFrame.Dispose();
-        _podActionFrame = new PodActionFrame(e.PodName, e.Namespace, _kubectlService)
-        {
-            X = Pos.Right(_podListFrame)
-        };
+        _podActionFrame = _podActionFrameFactory.Create(e.PodName, e.Namespace);
+        _podActionFrame.X = Pos.Right(_podListFrame);
         Add(_podActionFrame);
     }
 
