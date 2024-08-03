@@ -2,6 +2,8 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using K8sUtils.Exceptions;
+using Newtonsoft.Json;
+using GetPodsResponseRoot = K8sUtils.Models.GetPodsResponse.Root;
 
 namespace K8sUtils.ProcessHosts;
 
@@ -59,7 +61,14 @@ public class KubectlHost : IKubectlHost
             throw new KubectlRuntimeException("Kubectl exited with a non 0 error code. This may be a bug.");
         }
 
-        return ParsePodNamesFromJson(output).ToArray();
+        var parsedResult = JsonConvert.DeserializeObject<GetPodsResponseRoot>(output);
+
+        if (parsedResult is null)
+        {
+            throw new KubectlRuntimeException("Kubectl output did not match expected data structure.");
+        }
+
+        return parsedResult.Items.Select(i => i.Metadata.Name);
     }
     
     public async Task<IEnumerable<string>> GetLogs(string podName, string @namespace)
@@ -86,21 +95,5 @@ public class KubectlHost : IKubectlHost
         }
 
         return output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-    }
-
-    private static List<string> ParsePodNamesFromJson(string json)
-    {
-        var podNames = new List<string>();
-        using JsonDocument doc = JsonDocument.Parse(json);
-        JsonElement root = doc.RootElement;
-        JsonElement items = root.GetProperty("items");
-
-        foreach (JsonElement item in items.EnumerateArray())
-        {
-            string name = item.GetProperty("metadata").GetProperty("name").GetString();
-            podNames.Add(name);
-        }
-
-        return podNames;
     }
 }
