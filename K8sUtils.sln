@@ -1,6 +1,6 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K8sUtils", "K8sUtils.csproj", "{B179EA61-036F-4558-A981-EEA843DCADC2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K8sUtils", "K8sUtils\K8sUtils.csproj", "{ECB7919E-094C-47A1-80B7-E469F90ED456}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "K8sUtils.UnitTests", "K8sUtils.UnitTests\K8sUtils.UnitTests.csproj", "{7A12F6C3-985B-409F-AC82-5E7B3FC49FD2}"
 EndProject
@@ -18,5 +18,9 @@ Global
 		{7A12F6C3-985B-409F-AC82-5E7B3FC49FD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A12F6C3-985B-409F-AC82-5E7B3FC49FD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A12F6C3-985B-409F-AC82-5E7B3FC49FD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECB7919E-094C-47A1-80B7-E469F90ED456}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECB7919E-094C-47A1-80B7-E469F90ED456}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECB7919E-094C-47A1-80B7-E469F90ED456}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECB7919E-094C-47A1-80B7-E469F90ED456}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

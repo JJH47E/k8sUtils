@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\K8sUtils.csproj" />
+      <ProjectReference Include="..\K8sUtils\K8sUtils.csproj" />
     </ItemGroup>
 
 </Project>
