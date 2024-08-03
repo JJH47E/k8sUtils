@@ -6,7 +6,6 @@ namespace K8sUtils.Controls;
 
 public class PodActionFrame : FrameView
 {
-    private TabView _tabView;
     private readonly string? _podName;
     private readonly string? _namespace;
     private readonly IKubectlService _kubectlService;
@@ -36,19 +35,19 @@ public class PodActionFrame : FrameView
             return;
         }
 
-        _tabView = new TabView()
+        var tabView = new TabView()
         {
             Height = Dim.Fill(),
             Width = Dim.Fill(),
         };
         
-        _tabView.AddTab(new Tab()
+        tabView.AddTab(new Tab()
         {
             DisplayText = "Logs",
             View = CreateLogsView()
         }, true);
         
-        Add(_tabView);
+        Add(tabView);
     }
 
     private LogsView CreateLogsView()
