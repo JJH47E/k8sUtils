@@ -1,18 +1,20 @@
 using K8sUtils.Exceptions;
+using K8sUtils.Models.GetPodsResponse;
 using K8sUtils.ProcessHosts;
 
 namespace K8sUtils.Services;
 
 public class KubectlService(IKubectlHost kubectlHost) : IKubectlService
 {
-    public async Task<IEnumerable<string>> GetPodsAsync(string @namespace)
+    public async Task<IEnumerable<Item>> GetPodsAsync(string @namespace)
     {
         if (string.IsNullOrWhiteSpace(@namespace))
         {
             throw new ArgumentException("Namespace cannot be null or empty", nameof(@namespace));
         }
         
-        var pods = (await kubectlHost.ListPods(@namespace)).ToList();
+        var response = await kubectlHost.ListPods(@namespace);
+        var pods = response.Items;
         
         if (pods.Count == 0)
         {

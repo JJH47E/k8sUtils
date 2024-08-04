@@ -19,7 +19,7 @@ public class MainWindow : Window
         
         _namespaceDialog = new NamespaceInputDialog();
         _podListFrame = new PodListFrame(kubectlService);
-        _podActionFrame = _podActionFrameFactory.Create(null, null);
+        _podActionFrame = _podActionFrameFactory.Create(null);
         _podActionFrame.X = Pos.Right(_podListFrame);
 
         _namespaceDialog.NamespaceEntered += _podListFrame.OnNamespaceEntered;
@@ -40,7 +40,7 @@ public class MainWindow : Window
     {
         Remove(_podActionFrame);
         _podActionFrame.Dispose();
-        _podActionFrame = _podActionFrameFactory.Create(e.PodName, e.Namespace);
+        _podActionFrame = _podActionFrameFactory.Create(e.Pod);
         _podActionFrame.X = Pos.Right(_podListFrame);
         Add(_podActionFrame);
     }

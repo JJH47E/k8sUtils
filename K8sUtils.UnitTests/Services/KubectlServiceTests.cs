@@ -1,5 +1,7 @@
+using AutoFixture;
 using FluentAssertions;
 using K8sUtils.Exceptions;
+using K8sUtils.Models.GetPodsResponse;
 using K8sUtils.ProcessHosts;
 using K8sUtils.Services;
 using NSubstitute;
@@ -11,6 +13,7 @@ public class KubectlServiceTests
 {
     private readonly KubectlService _sut;
     private readonly IKubectlHost _kubectlHost;
+    private readonly Fixture _fixture = new();
     
     public KubectlServiceTests()
     {
@@ -36,7 +39,10 @@ public class KubectlServiceTests
     public async Task GetPodsAsync_NoPodsFound_ThrowsKubectlRuntimeException()
     {
         // Arrange
-        _kubectlHost.ListPods(Arg.Any<string>()).Returns([]);
+        _kubectlHost.ListPods(Arg.Any<string>()).Returns(
+            _fixture.Build<Root>()
+                .With(x => x.Items, () => [])
+                .Create());
 
         // Act
         var act = async () => await _sut.GetPodsAsync("test");
@@ -49,14 +55,17 @@ public class KubectlServiceTests
     public async Task GetPodsAsync_PodsFound_ReturnsPods()
     {
         // Arrange
-        string[] expectedPods = ["pod1", "pod2"];
-        _kubectlHost.ListPods(Arg.Any<string>()).Returns(expectedPods);
+        var expectedPods = _fixture.CreateMany<Item>(3).ToList();
+        var root = _fixture.Build<Root>()
+            .With(x => x.Items, () => expectedPods)
+            .Create();
+        _kubectlHost.ListPods(Arg.Any<string>()).Returns(root);
         
         // Act
         var result = await _sut.GetPodsAsync("test");
         
         // Assert
-        result.Should().BeEquivalentTo(expectedPods);
+        result.ToList().Should().BeEquivalentTo(expectedPods);
         await _kubectlHost.Received(1).ListPods(Arg.Any<string>());
     }
     

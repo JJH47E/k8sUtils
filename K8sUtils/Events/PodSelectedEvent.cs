@@ -1,3 +1,5 @@
+using K8sUtils.Models.GetPodsResponse;
+
 namespace K8sUtils.Events;
 
-public record PodSelectedEvent(string PodName, string Namespace);
+public record PodSelectedEvent(Item Pod);

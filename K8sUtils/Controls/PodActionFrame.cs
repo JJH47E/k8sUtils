@@ -1,4 +1,5 @@
 using K8sUtils.Events;
+using K8sUtils.Models.GetPodsResponse;
 using K8sUtils.Services;
 using Terminal.Gui;
 
@@ -6,23 +7,21 @@ namespace K8sUtils.Controls;
 
 public class PodActionFrame : FrameView
 {
-    private readonly string? _podName;
-    private readonly string? _namespace;
+    private readonly Item? _pod;
     private readonly IKubectlService _kubectlService;
     
     public EventHandler<FatalErrorEvent>? FatalError;
     
-    public PodActionFrame(string? podName, string? @namespace, IKubectlService kubectlService)
+    public PodActionFrame(Item? pod, IKubectlService kubectlService)
     {
-        _podName = podName;
-        _namespace = @namespace;
+        _pod = pod;
         _kubectlService = kubectlService;
         
-        Title = _podName ?? "Pod";
+        Title = _pod?.ToString() ?? "Pod";
         Width = Dim.Fill();
         Height = Dim.Fill();
 
-        if (string.IsNullOrWhiteSpace(_podName) || string.IsNullOrWhiteSpace(_namespace))
+        if (pod is null)
         {
             var label = new Label()
             {
@@ -61,7 +60,11 @@ public class PodActionFrame : FrameView
         // create view & invoke async setter function
         var view = new LogsView(_kubectlService);
         view.FatalError += OnFatalError;
-        view.UpdateView(_podName!, _namespace!);
+
+        if (_pod != null)
+        {
+            view.UpdateView(_pod.ToString(), _pod.GetNamespace());   
+        }
         return view;
     }
 

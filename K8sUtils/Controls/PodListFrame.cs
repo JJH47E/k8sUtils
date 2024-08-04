@@ -1,9 +1,9 @@
 using System.Collections.ObjectModel;
 using K8sUtils.Events;
 using K8sUtils.Exceptions;
-using K8sUtils.ProcessHosts;
 using K8sUtils.Services;
 using Terminal.Gui;
+using GetPodsResponseItem = K8sUtils.Models.GetPodsResponse.Item;
 
 namespace K8sUtils.Controls;
 
@@ -29,8 +29,8 @@ public class PodListFrame : FrameView
         Y = 0;
         
         _podList = new PodList();
-        _podList.SetSource(new ObservableCollection<string>([]));
-
+        _podList.SetSource(new ObservableCollection<GetPodsResponseItem>([]));
+        
         _podList.SelectedItemChanged += OnSelectedItemChanged;
         
         Add(_podList);
@@ -44,7 +44,7 @@ public class PodListFrame : FrameView
 
     private void OnSelectedItemChanged(object? sender, ListViewItemEventArgs e)
     {
-        PodSelected?.Invoke(this, new PodSelectedEvent(e.Value.ToString()!, _namespace));
+        PodSelected?.Invoke(this, new PodSelectedEvent((GetPodsResponseItem)e.Value));
     }
 
     private async void CallGetContainersAsync()
@@ -59,7 +59,7 @@ public class PodListFrame : FrameView
                 _cancellationTokenSource.Token.ThrowIfCancellationRequested();
             }
 
-            ObservableCollection<string> items;
+            ObservableCollection<GetPodsResponseItem> items;
 
             try
             {
@@ -86,8 +86,8 @@ public class PodListFrame : FrameView
         catch (OperationCanceledException _) {}
     }
 
-    private async Task<ObservableCollection<string>> GetPodsAsync()
+    private async Task<ObservableCollection<GetPodsResponseItem>> GetPodsAsync()
     {
-        return new ObservableCollection<string>(await _kubectlService.GetPodsAsync(_namespace));
+        return new ObservableCollection<GetPodsResponseItem>(await _kubectlService.GetPodsAsync(_namespace));
     }
 }

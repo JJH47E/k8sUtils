@@ -1,9 +1,8 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Text.Json;
 using K8sUtils.Exceptions;
+using K8sUtils.Models.GetPodsResponse;
 using Newtonsoft.Json;
-using GetPodsResponseRoot = K8sUtils.Models.GetPodsResponse.Root;
 
 namespace K8sUtils.ProcessHosts;
 
@@ -39,7 +38,7 @@ public class KubectlHost : IKubectlHost
         return !string.IsNullOrEmpty(output) && File.Exists(output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)[0].Trim());
     }
 
-    public async Task<IEnumerable<string>> ListPods(string @namespace)
+    public async Task<Root> ListPods(string @namespace)
     {
         var processInfo = new ProcessStartInfo(KubectlCommand, $"get pods -n {@namespace} -o json")
         {
@@ -61,14 +60,14 @@ public class KubectlHost : IKubectlHost
             throw new KubectlRuntimeException("Kubectl exited with a non 0 error code. This may be a bug.");
         }
 
-        var parsedResult = JsonConvert.DeserializeObject<GetPodsResponseRoot>(output);
+        var parsedResult = JsonConvert.DeserializeObject<Root>(output);
 
         if (parsedResult is null)
         {
             throw new KubectlRuntimeException("Kubectl output did not match expected data structure.");
         }
 
-        return parsedResult.Items.Select(i => i.Metadata.Name);
+        return parsedResult;
     }
     
     public async Task<IEnumerable<string>> GetLogs(string podName, string @namespace)

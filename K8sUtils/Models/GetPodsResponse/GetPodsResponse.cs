@@ -13,7 +13,15 @@ public record Item(
     Metadata Metadata,
     Spec Spec,
     Status Status
-);
+)
+{
+    public sealed override string ToString() => Metadata.Name;
+    public string? GetServiceName() => Metadata.Labels.GetValueOrDefault("app");
+    public string GetNamespace() => Metadata.Namespace;
+    public string? GetCommitHash() => Metadata.Labels.GetValueOrDefault("pod-template-hash");
+    // Ideally parse as an enum in future
+    public string? GetStatus() => Status.Phase;
+};
 
 public record Metadata(
     DateTime CreationTimestamp,
