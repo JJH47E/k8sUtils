@@ -15,6 +15,10 @@ public class MainWindow : Window
     
     public MainWindow(IPodActionFrameFactory podActionFrameFactory, IKubectlService kubectlService)
     {
+        // These two lines shouldn't be needed
+        Application.QuitKey = Key.Esc;
+        KeyBindings.Add (Application.QuitKey, Command.QuitToplevel);
+        
         _podActionFrameFactory = podActionFrameFactory;
         
         _namespaceDialog = new NamespaceInputDialog();
@@ -32,8 +36,8 @@ public class MainWindow : Window
         StatusBar.Add (
             new Shortcut
             {
-                Title = "ESC Quit",
-                Key = Key.Esc
+                Title = "Quit",
+                Key = Application.QuitKey
             }
         );
         

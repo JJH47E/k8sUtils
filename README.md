@@ -28,6 +28,10 @@ kubectl expose deployment hello-minikube --type=NodePort --port=8080 -n test
 kubectl logs service/hello-minikube -n test
 ```
 
+To run the project, run the following command in the root of the repository:
+
+`dotnet run --project K8sUtils`
+
 ## Future Development
 
 Features I hope to add one day:

@@ -1,3 +1,5 @@
 {
-  "Application.QuitKey": "Esc"
+  "AppSettings": {
+    "Application.QuitKey": "Esc"
+  }
 }
