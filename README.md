@@ -27,3 +27,12 @@ kubectl create deployment hello-minikube --image=kicbase/echo-server:1.0 -n test
 kubectl expose deployment hello-minikube --type=NodePort --port=8080 -n test
 kubectl logs service/hello-minikube -n test
 ```
+
+## Future Development
+
+Features I hope to add one day:
+
+- Pod resouce usage charts
+- Open shell button
+- Port forward button
+- And more...
