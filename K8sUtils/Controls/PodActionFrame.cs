@@ -43,9 +43,15 @@ public class PodActionFrame : FrameView
         
         tabView.AddTab(new Tab()
         {
+            DisplayText = "Info",
+            View = CreateInfoView()
+        }, true);
+        
+        tabView.AddTab(new Tab()
+        {
             DisplayText = "Logs",
             View = CreateLogsView()
-        }, true);
+        }, false);
         
         Add(tabView);
     }
@@ -57,6 +63,11 @@ public class PodActionFrame : FrameView
         view.FatalError += OnFatalError;
         view.UpdateView(_podName!, _namespace!);
         return view;
+    }
+
+    private PodInfoView CreateInfoView()
+    {
+        return new PodInfoView();
     }
 
     private void OnFatalError(object? sender, FatalErrorEvent e)
