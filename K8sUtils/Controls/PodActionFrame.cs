@@ -70,7 +70,7 @@ public class PodActionFrame : FrameView
 
     private PodInfoView CreateInfoView()
     {
-        return new PodInfoView();
+        return new PodInfoView(_pod!);
     }
 
     private void OnFatalError(object? sender, FatalErrorEvent e)
