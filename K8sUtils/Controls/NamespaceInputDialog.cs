@@ -10,7 +10,6 @@ public class NamespaceInputDialog : Dialog
     public NamespaceInputDialog()
     {
         Title = "Input Namespace";
-        
         var namespaceLabel = new Label { Text = "Namespace:" };
 
         var namespaceText = new TextField

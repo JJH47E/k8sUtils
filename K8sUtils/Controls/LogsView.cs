@@ -3,6 +3,7 @@ using K8sUtils.Events;
 using K8sUtils.Exceptions;
 using K8sUtils.Services;
 using Terminal.Gui;
+using TextCopy;
 
 namespace K8sUtils.Controls;
 
@@ -21,6 +22,17 @@ public class LogsView : ListView
         
         Width = Dim.Fill();
         Height = Dim.Fill();
+
+        SelectedItemChanged += OnSelectedChanged;
+    }
+
+    private void OnSelectedChanged(object? sender, ListViewItemEventArgs e)
+    {
+        var content = e.Value.ToString();
+        if (!string.IsNullOrWhiteSpace(content))
+        {
+            ClipboardService.SetText(content);   
+        }
     }
 
     public void UpdateView(string podName, string @namespace)
