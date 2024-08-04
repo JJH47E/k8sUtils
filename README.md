@@ -1,5 +1,7 @@
 # K8sUtils
 
+![Screen Recording 2024-08-04 at 15 02 13](https://github.com/user-attachments/assets/822acf73-9b2d-4dab-b802-0fc29bc7276d)
+
 A GUI tool for overseeing kubernetes deployments. *This is not a tool for managing clusters.*
 
 This application is not intended to replace `kubectl`, its aim is purely to make simple `kubectl` tasks simpler.
