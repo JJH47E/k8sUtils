@@ -27,8 +27,19 @@ public class MainWindow : Window
         
         _podListFrame.PodSelected += OnPodSelected;
         _podListFrame.FatalError += OnFatalError;
+        
+        StatusBar = new StatusBar();
+        StatusBar.Add (
+            new Shortcut
+            {
+                Title = "ESC Quit",
+                Key = Key.Esc
+            }
+        );
+        
+        ((Shortcut)StatusBar.Subviews [0]).Key = Application.QuitKey;
 
-        Add(_podListFrame, _podActionFrame, _namespaceDialog);
+        Add(_podListFrame, _podActionFrame, _namespaceDialog, StatusBar);
     }
     
     private void OnNamespaceEntered(object? sender, NamespaceSelectedEvent e)

@@ -15,7 +15,7 @@ public class NamespaceInputDialog : Dialog
         var namespaceText = new TextField
         {
             X = Pos.Right(namespaceLabel) + 1,
-            Width = Dim.Fill()
+            Width = Dim.Percent(50)
         };
         
         var btnSubmit = new Button
@@ -28,7 +28,10 @@ public class NamespaceInputDialog : Dialog
 
         btnSubmit.Accept += (s, e) =>
         {
-            NamespaceEntered?.Invoke(this, new NamespaceSelectedEvent(namespaceText.Text));
+            if (!string.IsNullOrWhiteSpace(namespaceText.Text))
+            {
+                NamespaceEntered?.Invoke(this, new NamespaceSelectedEvent(namespaceText.Text));   
+            }
         };
 
         Add(namespaceLabel, namespaceText, btnSubmit);

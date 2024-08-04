@@ -24,7 +24,7 @@ public class PodListFrame : FrameView
         
         Title = "Pods";
         Width = Dim.Percent(25);
-        Height = Dim.Fill();
+        Height = Dim.Fill(1);
         X = 0;
         Y = 0;
         

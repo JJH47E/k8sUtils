@@ -16,15 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="K8sUtils.UnitTests\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Remove="K8sUtils.UnitTests\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="K8sUtils.UnitTests\**" />
+        <None Remove="Resources\config.json" />
     </ItemGroup>
 
 </Project>

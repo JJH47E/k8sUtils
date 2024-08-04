@@ -19,7 +19,7 @@ public class PodActionFrame : FrameView
         
         Title = _pod?.ToString() ?? "Pod";
         Width = Dim.Fill();
-        Height = Dim.Fill();
+        Height = Dim.Fill(1);
 
         if (pod is null)
         {
