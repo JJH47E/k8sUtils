@@ -6,7 +6,7 @@ namespace K8sUtils.Factories;
 
 public class PodActionFrameFactory(IKubectlService kubectlService) : IPodActionFrameFactory
 {
-    public PodActionFrame Create(Item? pod)
+    public PodActionFrame Create(PodItem? pod)
     {
         return new PodActionFrame(pod, kubectlService);
     }

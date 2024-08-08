@@ -6,7 +6,7 @@ namespace K8sUtils.Services;
 
 public class KubectlService(IKubectlHost kubectlHost) : IKubectlService
 {
-    public async Task<IEnumerable<Item>> GetPodsAsync(string @namespace)
+    public async Task<IEnumerable<PodItem>> GetPodsAsync(string @namespace)
     {
         if (string.IsNullOrWhiteSpace(@namespace))
         {

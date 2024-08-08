@@ -1,15 +1,14 @@
-using System.Collections.ObjectModel;
 using K8sUtils.Events;
 using K8sUtils.Exceptions;
+using K8sUtils.Models.GetPodsResponse;
 using K8sUtils.Services;
 using Terminal.Gui;
-using GetPodsResponseItem = K8sUtils.Models.GetPodsResponse.Item;
 
 namespace K8sUtils.Controls;
 
 public class PodListFrame : FrameView
 {
-    private readonly AsyncListView<GetPodsResponseItem> _podList;
+    private readonly AsyncListView<PodItem> _podList;
     private readonly IKubectlService _kubectlService;
 
     private static string _namespace = null!;
@@ -27,7 +26,7 @@ public class PodListFrame : FrameView
         X = 0;
         Y = 0;
         
-        _podList = new AsyncListView<GetPodsResponseItem>(GetPodsAsync, OnError)
+        _podList = new AsyncListView<PodItem>(GetPodsAsync, OnError)
         {
             Width = Dim.Fill(),
             Height = Dim.Fill(),
@@ -43,12 +42,12 @@ public class PodListFrame : FrameView
         Application.Invoke(_podList.SetSourceAsync);
     }
 
-    private void OnSelectedItemChanged(object? sender, SelectedItemChangedEvent<GetPodsResponseItem> e)
+    private void OnSelectedItemChanged(object? sender, SelectedItemChangedEvent<PodItem> e)
     {
         PodSelected?.Invoke(this, new PodSelectedEvent(e.Value));
     }
 
-    private async Task<IEnumerable<GetPodsResponseItem>> GetPodsAsync()
+    private async Task<IEnumerable<PodItem>> GetPodsAsync()
     {
         return await _kubectlService.GetPodsAsync(_namespace);
     }
