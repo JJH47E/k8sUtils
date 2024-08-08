@@ -1,3 +1,4 @@
+using K8sUtils.Mappers;
 using K8sUtils.Models.GetPodsResponse;
 using Terminal.Gui;
 
@@ -5,7 +6,7 @@ namespace K8sUtils.Controls;
 
 public class PodInfoView : View
 {
-    public PodInfoView(Item pod)
+    public PodInfoView(PodItem pod)
     {
         Width = Dim.Fill();
         Height = Dim.Fill();
@@ -17,7 +18,7 @@ public class PodInfoView : View
 
         var statusLabel = new Label()
         {
-            Text = $"Status: {pod.GetStatus() ?? "Unknown"}",
+            Text = $"Status: {PodStatusMappers.StatusToIcon(pod.GetStatus() ?? PodStatus.Unknown)}",
             Y = Pos.Bottom(podLabel),
         };
 
