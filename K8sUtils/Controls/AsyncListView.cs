@@ -19,6 +19,7 @@ public class AsyncListView<TModel> : View
     {
         _getItems = getItems;
         _exceptionHandler = exceptionHandler;
+        _spinner = new LoadingSpinner();
         
         _list = new ListView()
         {
@@ -31,14 +32,20 @@ public class AsyncListView<TModel> : View
         _list.SetSource(new ObservableCollection<TModel>());
         _list.Visible = false;
 
-        _spinner = new LoadingSpinner();
         _spinner.Visible = false;
-
+        
         Add(_spinner, _list);
     }
     
     public async void SetSourceAsync()
     {
+        var timer = new Timer (
+            o => Application.Invoke(() => _spinner.AdvanceAnimation()),
+            null,
+            0,
+            100
+        );
+        
         _cancellationTokenSource = new CancellationTokenSource();
         _list.Source = null;
 
@@ -66,11 +73,11 @@ public class AsyncListView<TModel> : View
                 {
                     throw;
                 }
-                
+
                 _exceptionHandler(ex);
                 return;
             }
-            
+
             if (!_cancellationTokenSource.IsCancellationRequested)
             {
                 await _list.SetSourceAsync(new ObservableCollection<TModel>(items));
@@ -86,7 +93,13 @@ public class AsyncListView<TModel> : View
                 }
             }
         }
-        catch (OperationCanceledException _) {}
+        catch (OperationCanceledException _)
+        {
+        }
+        finally
+        {
+            await timer.DisposeAsync();
+        }
     }
 
     private void OnSelectedItemChanged(object? sender, ListViewItemEventArgs e)
