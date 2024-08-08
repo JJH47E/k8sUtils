@@ -5,10 +5,12 @@ namespace K8sUtils.ProcessHosts;
 
 public class StubKubectlHost : IKubectlHost
 {
-    public Task<Root> ListPods(string @namespace)
+    public async Task<GetPodsResponse> ListPods(string @namespace)
     {
+        await Task.Delay(2000);
+        
         #region json
-        var json = JsonConvert.DeserializeObject<Root>(@"{
+        var json = JsonConvert.DeserializeObject<GetPodsResponse>(@"{
     ""apiVersion"": ""v1"",
     ""items"": [
         {
@@ -201,7 +203,7 @@ public class StubKubectlHost : IKubectlHost
         ""resourceVersion"": """"
     }
 }");
-        return Task.FromResult(json!);
+        return json!;
         #endregion
     }
 

@@ -7,12 +7,12 @@ namespace K8sUtils.Controls;
 
 public class PodActionFrame : FrameView
 {
-    private readonly Item? _pod;
+    private readonly PodItem? _pod;
     private readonly IKubectlService _kubectlService;
     
     public EventHandler<FatalErrorEvent>? FatalError;
     
-    public PodActionFrame(Item? pod, IKubectlService kubectlService)
+    public PodActionFrame(PodItem? pod, IKubectlService kubectlService)
     {
         _pod = pod;
         _kubectlService = kubectlService;

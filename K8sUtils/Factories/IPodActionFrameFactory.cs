@@ -5,5 +5,5 @@ namespace K8sUtils.Factories;
 
 public interface IPodActionFrameFactory
 {
-    PodActionFrame Create(Item? pod);
+    PodActionFrame Create(PodItem? pod);
 }

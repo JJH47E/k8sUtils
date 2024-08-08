@@ -30,7 +30,7 @@ public static class Program
             {
                 c.AddSingleton<IKubectlService, KubectlService>();
                 // Use Stub implementation for testing
-                c.AddSingleton<IKubectlHost, KubectlHost>();
+                c.AddSingleton<IKubectlHost, StubKubectlHost>();
                 c.AddSingleton<IPodActionFrameFactory, PodActionFrameFactory>();
                 c.AddSingleton<ConsoleRunner>();
                 c.AddSingleton<MainWindow>();

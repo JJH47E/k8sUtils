@@ -38,7 +38,7 @@ public class KubectlHost : IKubectlHost
         return !string.IsNullOrEmpty(output) && File.Exists(output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)[0].Trim());
     }
 
-    public async Task<Root> ListPods(string @namespace)
+    public async Task<GetPodsResponse> ListPods(string @namespace)
     {
         var processInfo = new ProcessStartInfo(KubectlCommand, $"get pods -n {@namespace} -o json")
         {
@@ -60,7 +60,7 @@ public class KubectlHost : IKubectlHost
             throw new KubectlRuntimeException("Kubectl exited with a non 0 error code. This may be a bug.");
         }
 
-        var parsedResult = JsonConvert.DeserializeObject<Root>(output);
+        var parsedResult = JsonConvert.DeserializeObject<GetPodsResponse>(output);
 
         if (parsedResult is null)
         {
