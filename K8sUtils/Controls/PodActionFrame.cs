@@ -51,8 +51,21 @@ public class PodActionFrame : FrameView
             DisplayText = "Logs",
             View = CreateLogsView()
         }, false);
+
+        tabView.SelectedTabChanged += OnTabChange;
         
         Add(tabView);
+    }
+
+    private void OnTabChange(object? sender, TabChangedEventArgs e)
+    {
+        if (e.NewTab.View is LogsView logsView)
+        {
+            if (_pod != null)
+            {
+                logsView.UpdateView(_pod.ToString(), _pod.GetNamespace());   
+            }
+        }
     }
 
     private LogsView CreateLogsView()
@@ -60,11 +73,6 @@ public class PodActionFrame : FrameView
         // create view & invoke async setter function
         var view = new LogsView(_kubectlService);
         view.FatalError += OnFatalError;
-
-        if (_pod != null)
-        {
-            view.UpdateView(_pod.ToString(), _pod.GetNamespace());   
-        }
         return view;
     }
 
