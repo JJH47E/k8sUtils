@@ -4,6 +4,6 @@ namespace K8sUtils.Services;
 
 public interface IKubectlService
 {
-    Task<IEnumerable<Item>> GetPodsAsync(string @namespace);
+    Task<IEnumerable<PodItem>> GetPodsAsync(string @namespace);
     Task<IEnumerable<string>> GetLogsAsync(string podName, string @namespace);
 }

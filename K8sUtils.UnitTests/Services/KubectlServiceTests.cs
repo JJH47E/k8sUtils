@@ -40,7 +40,7 @@ public class KubectlServiceTests
     {
         // Arrange
         _kubectlHost.ListPods(Arg.Any<string>()).Returns(
-            _fixture.Build<Root>()
+            _fixture.Build<GetPodsResponse>()
                 .With(x => x.Items, () => [])
                 .Create());
 
@@ -55,8 +55,8 @@ public class KubectlServiceTests
     public async Task GetPodsAsync_PodsFound_ReturnsPods()
     {
         // Arrange
-        var expectedPods = _fixture.CreateMany<Item>(3).ToList();
-        var root = _fixture.Build<Root>()
+        var expectedPods = _fixture.CreateMany<PodItem>(3).ToList();
+        var root = _fixture.Build<GetPodsResponse>()
             .With(x => x.Items, () => expectedPods)
             .Create();
         _kubectlHost.ListPods(Arg.Any<string>()).Returns(root);
