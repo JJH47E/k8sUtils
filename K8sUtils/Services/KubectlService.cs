@@ -1,4 +1,5 @@
 using K8sUtils.Exceptions;
+using K8sUtils.Models.Context;
 using K8sUtils.Models.GetPodsResponse;
 using K8sUtils.ProcessHosts;
 
@@ -38,5 +39,27 @@ public class KubectlService(IKubectlHost kubectlHost) : IKubectlService
         }
         
         return kubectlHost.GetLogs(podName, @namespace);
+    }
+
+    public async Task<IEnumerable<Context>> GetContextsAsync()
+    {
+        var currentContextTask = kubectlHost.GetCurrentContext();
+        var allContextsTask = kubectlHost.GetAllContexts();
+        
+        await Task.WhenAll(currentContextTask, allContextsTask);
+        
+        var currentContext = currentContextTask.Result;
+        var allContexts = allContextsTask.Result;
+
+        return allContexts.Select(ctx => new Context()
+        {
+            Name = ctx,
+            IsCurrent = string.Equals(currentContext, ctx, StringComparison.InvariantCultureIgnoreCase)
+        });
+    }
+
+    public Task<string> GetCurrentContextAsync()
+    {
+        return kubectlHost.GetCurrentContext();
     }
 }

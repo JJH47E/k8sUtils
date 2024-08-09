@@ -215,4 +215,14 @@ public class StubKubectlHost : IKubectlHost
 
         return logs.AsEnumerable();
     }
+
+    public Task<string> GetCurrentContext()
+    {
+        return Task.FromResult("minikube");
+    }
+
+    public Task<IEnumerable<string>> GetAllContexts()
+    {
+        return Task.FromResult<IEnumerable<string>>(new List<string> { "minikube", "minikube2" });
+    }
 }
