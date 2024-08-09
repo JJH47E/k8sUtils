@@ -7,7 +7,7 @@ public class StubKubectlHost : IKubectlHost
 {
     public async Task<GetPodsResponse> ListPods(string @namespace)
     {
-        await Task.Delay(2000);
+        await Task.Delay(1000);
         
         #region json
         var json = JsonConvert.DeserializeObject<GetPodsResponse>(@"{
@@ -207,10 +207,12 @@ public class StubKubectlHost : IKubectlHost
         #endregion
     }
 
-    public Task<IEnumerable<string>> GetLogs(string podName, string @namespace)
+    public async Task<IEnumerable<string>> GetLogs(string podName, string @namespace)
     {
+        await Task.Delay(500);
+        
         var logs = Enumerable.Range(1, 10).Select(i => $"{podName} log {i}").ToList();
 
-        return Task.FromResult(logs.AsEnumerable());
+        return logs.AsEnumerable();
     }
 }

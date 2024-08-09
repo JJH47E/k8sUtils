@@ -49,7 +49,7 @@ public class PodActionFrame : FrameView
         tabView.AddTab(new Tab()
         {
             DisplayText = "Logs",
-            View = CreateLogsView()
+            View = CreateLogsFrame()
         }, false);
 
         tabView.SelectedTabChanged += OnTabChange;
@@ -59,19 +59,24 @@ public class PodActionFrame : FrameView
 
     private void OnTabChange(object? sender, TabChangedEventArgs e)
     {
-        if (e.NewTab.View is LogsView logsView)
+        if (e.NewTab.View is PodLogsView logsView)
         {
             if (_pod != null)
             {
-                logsView.UpdateView(_pod.ToString(), _pod.GetNamespace());   
+                logsView.UpdateView();   
             }
         }
     }
 
-    private LogsView CreateLogsView()
+    private PodLogsView CreateLogsFrame()
     {
         // create view & invoke async setter function
-        var view = new LogsView(_kubectlService);
+        if (_pod is null)
+        {
+            throw new InvalidOperationException("Cannot get logs of unknown pod!");
+        }
+        
+        var view = new PodLogsView(_pod.GetNamespace(), _pod.ToString(), _kubectlService);
         view.FatalError += OnFatalError;
         return view;
     }
