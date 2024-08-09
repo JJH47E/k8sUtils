@@ -17,7 +17,7 @@ public class MainWindow : Window
     {
         // These two lines shouldn't be needed
         Application.QuitKey = Key.Esc;
-        KeyBindings.Add (Application.QuitKey, Command.QuitToplevel);
+        KeyBindings.Add(Application.QuitKey, Command.QuitToplevel);
         
         _podActionFrameFactory = podActionFrameFactory;
         
@@ -41,8 +41,6 @@ public class MainWindow : Window
             }
         );
         
-        ((Shortcut)StatusBar.Subviews [0]).Key = Application.QuitKey;
-
         Add(_podListFrame, _podActionFrame, _namespaceDialog, StatusBar);
     }
     
