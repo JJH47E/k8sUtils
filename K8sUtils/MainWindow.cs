@@ -12,6 +12,7 @@ public class MainWindow : Window
     private readonly IPodActionFrameFactory _podActionFrameFactory;
     private PodActionFrame _podActionFrame;
     private PodListFrame _podListFrame;
+    private ContextSwitcher _contextSwitcher;
     
     public MainWindow(IPodActionFrameFactory podActionFrameFactory, IKubectlService kubectlService)
     {
@@ -22,12 +23,25 @@ public class MainWindow : Window
         _podActionFrameFactory = podActionFrameFactory;
         
         _namespaceDialog = new NamespaceInputDialog();
-        _podListFrame = new PodListFrame(kubectlService);
+        _contextSwitcher = new ContextSwitcher(kubectlService)
+        {
+            Height = Dim.Auto(),
+            Width = Dim.Percent(25),
+            X = 0,
+            Y = 0
+        };
+        _podListFrame = new PodListFrame(kubectlService)
+        {
+            Y = Pos.Bottom(_contextSwitcher)
+        };
         _podActionFrame = _podActionFrameFactory.Create(null);
         _podActionFrame.X = Pos.Right(_podListFrame);
 
         _namespaceDialog.NamespaceEntered += _podListFrame.OnNamespaceEntered;
+        _namespaceDialog.NamespaceEntered += _contextSwitcher.OnNamespaceSelected;
         _namespaceDialog.NamespaceEntered += OnNamespaceEntered;
+
+        _contextSwitcher.UpdateNamespace += OnUpdateNamespace;
         
         _podListFrame.PodSelected += OnPodSelected;
         _podListFrame.FatalError += OnFatalError;
@@ -41,7 +55,13 @@ public class MainWindow : Window
             }
         );
         
-        Add(_podListFrame, _podActionFrame, _namespaceDialog, StatusBar);
+        Add(_contextSwitcher, _podListFrame, _podActionFrame, _namespaceDialog, StatusBar);
+    }
+
+    private void OnUpdateNamespace(object? sender, EventArgs e)
+    {
+        if (_namespaceDialog.IsAdded) return;
+        Add(_namespaceDialog);
     }
     
     private void OnNamespaceEntered(object? sender, NamespaceSelectedEvent e)

@@ -6,4 +6,6 @@ public interface IKubectlHost
 {
     Task<GetPodsResponse> ListPods(string @namespace);
     Task<IEnumerable<string>> GetLogs(string podName, string @namespace);
+    Task<string> GetCurrentContext();
+    Task<IEnumerable<string>> GetAllContexts();
 }

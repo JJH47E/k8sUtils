@@ -95,4 +95,56 @@ public class KubectlHost : IKubectlHost
 
         return output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
     }
+
+    public async Task<string> GetCurrentContext()
+    {
+        var processInfo = new ProcessStartInfo(KubectlCommand, "config current-context")
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        using var process = new Process();
+        process.StartInfo = processInfo;
+        process.Start();
+
+        var output = await process.StandardOutput.ReadToEndAsync();
+        var error = await process.StandardError.ReadToEndAsync();
+        await process.WaitForExitAsync();
+
+        if (process.ExitCode != 0)
+        {
+            throw new Exception($"kubectl command failed: {error}");
+        }
+
+        return output;
+    }
+
+    public async Task<IEnumerable<string>> GetAllContexts()
+    {
+        var processInfo = new ProcessStartInfo(KubectlCommand, $"config get-contexts -o name")
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        using var process = new Process();
+        process.StartInfo = processInfo;
+        process.Start();
+
+        var output = await process.StandardOutput.ReadToEndAsync();
+        var error = await process.StandardError.ReadToEndAsync();
+        await process.WaitForExitAsync();
+
+        if (process.ExitCode != 0)
+        {
+            throw new Exception($"kubectl command failed: {error}");
+        }
+
+        return output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+    }
 }
