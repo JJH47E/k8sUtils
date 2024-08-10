@@ -1,6 +1,6 @@
 # K8sUtils
 
-![Screen Recording 2024-08-04 at 15 02 13](https://github.com/user-attachments/assets/822acf73-9b2d-4dab-b802-0fc29bc7276d)
+![Screen Recording 2024-08-10 at 10 42 35](https://github.com/user-attachments/assets/6db53ec9-7280-4870-99fd-1eb1a33fa5d3)
 
 A GUI tool for overseeing kubernetes deployments. *This is not a tool for managing clusters.*
 
