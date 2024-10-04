@@ -46,7 +46,7 @@ public class PodLogsView : View
     private void OnKeyUp(object? sender, Key @event)
     {
         // Press `C` to copy selected log
-        if (@event.KeyCode == Key.C)
+        if (@event.KeyCode == Key.CursorRight)
         {
             ClipboardService.SetText(SelectedLog);
             @event.Handled = true;
