@@ -52,6 +52,12 @@ public class PodActionFrame : FrameView
             View = CreateLogsFrame()
         }, false);
 
+        tabView.AddTab(new Tab()
+        {
+            DisplayText = "Commands",
+            View = CreateCommandsFrame()
+        }, false);
+
         tabView.SelectedTabChanged += OnTabChange;
         
         Add(tabView);
@@ -70,13 +76,24 @@ public class PodActionFrame : FrameView
 
     private PodLogsView CreateLogsFrame()
     {
-        // create view & invoke async setter function
         if (_pod is null)
         {
             throw new InvalidOperationException("Cannot get logs of unknown pod!");
         }
         
         var view = new PodLogsView(_pod.Namespace, _pod.ToString(), _kubectlService);
+        view.FatalError += OnFatalError;
+        return view;
+    }
+
+    private PodCommandsFrame CreateCommandsFrame()
+    {
+        if (_pod is null)
+        {
+            throw new InvalidOperationException("Cannot show useful commands of unknown pod");
+        }
+
+        var view = new PodCommandsFrame(_pod.Namespace, _pod.ToString());
         view.FatalError += OnFatalError;
         return view;
     }

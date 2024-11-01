@@ -32,7 +32,7 @@ public class PodLogsView : View
             Height = Dim.Fill()
         };
         
-        _logList.KeyUp += OnKeyUp;
+        _logList.MouseClick += OnMouseClick;
         _logList.SelectedItemChanged += OnSelectedItemChange;
         
         Add(_logList);
@@ -43,10 +43,9 @@ public class PodLogsView : View
         Application.Invoke(_logList.SetSourceAsync);
     }
 
-    private void OnKeyUp(object? sender, Key @event)
+    private void OnMouseClick(object? sender, MouseEventEventArgs @event)
     {
-        // Press `C` to copy selected log
-        if (@event.KeyCode == Key.CursorRight)
+        if ((@event.MouseEvent.Flags & MouseFlags.Button3Clicked) != 0)
         {
             ClipboardService.SetText(SelectedLog);
             @event.Handled = true;
