@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using K8sUtils.Mappers;
 using K8sUtils.Models.GetPodsResponse;
 using Terminal.Gui;
@@ -18,28 +19,40 @@ public class PodInfoView : View
 
         var statusLabel = new Label()
         {
-            Text = $"Status: {PodStatusMappers.StatusToIcon(pod.GetStatus() ?? PodStatus.Unknown)}",
+            Text = $"Status: {PodStatusMappers.StatusToIcon(pod.PodStatus ?? PodStatus.Unknown)}",
             Y = Pos.Bottom(podLabel),
-        };
-
-        var podService = new Label()
-        {
-            Text = $"Service: {pod.GetServiceName() ?? "Unknown"}",
-            Y = Pos.Bottom(statusLabel),
         };
         
         var namespaceLabel = new Label()
         {
-            Text = $"Namespace: {pod.GetNamespace()}",
-            Y = Pos.Bottom(podService),
+            Text = $"Namespace: {pod.Namespace}",
+            Y = Pos.Bottom(statusLabel),
         };
 
-        var commitLabel = new Label()
+        var createdLabel = new Label()
         {
-            Text = $"Commit: {pod.GetCommitHash() ?? "Unknown"}",
+            Text = $"Created: {pod.Created.ToString()}",
             Y = Pos.Bottom(namespaceLabel),
         };
 
-        Add(podLabel, statusLabel, podService, namespaceLabel, commitLabel);
+        var labels = new ListWrapper<string>(
+            new ObservableCollection<string>(
+                pod.Labels.Select(x => $"{x.Key}: {x.Value}")));
+
+        var labelsLabel = new Label()
+        {
+            Text = "Labels:",
+            Y = Pos.Bottom(createdLabel),
+        };
+
+        var labelView = new ListView()
+        {
+            Y = Pos.Bottom(labelsLabel),
+            Height = Dim.Fill(),
+            Width = Dim.Fill(),
+            Source = labels
+        };
+
+        Add(podLabel, statusLabel, namespaceLabel, createdLabel, labelsLabel, labelView);
     }
 }

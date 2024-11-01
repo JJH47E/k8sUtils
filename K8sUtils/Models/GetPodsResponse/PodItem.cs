@@ -9,8 +9,10 @@ public record PodItem(
 )
 {
     public sealed override string ToString() => Metadata.Name;
-    public string? GetServiceName() => Metadata.Labels.GetValueOrDefault("app");
-    public string GetNamespace() => Metadata.Namespace;
-    public string? GetCommitHash() => Metadata.Labels.GetValueOrDefault("pod-template-hash");
-    public PodStatus? GetStatus() => Status.Phase;
+    public string Namespace => Metadata.Namespace;
+    public PodStatus? PodStatus => Status.Phase;
+    public string Kind => Kind;
+    public DateTimeOffset Created => Metadata.CreationTimestamp;
+    public DateTimeOffset Started => Status.StartTime;
+    public Dictionary<string, string> Labels => Metadata.Labels;
 };

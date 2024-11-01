@@ -76,7 +76,7 @@ public class PodActionFrame : FrameView
             throw new InvalidOperationException("Cannot get logs of unknown pod!");
         }
         
-        var view = new PodLogsView(_pod.GetNamespace(), _pod.ToString(), _kubectlService);
+        var view = new PodLogsView(_pod.Namespace, _pod.ToString(), _kubectlService);
         view.FatalError += OnFatalError;
         return view;
     }
